@@ -1,0 +1,197 @@
+
+R version 4.1.2 (2021-11-01) -- "Bird Hippie"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # I import and unzipp the file
+Warning message:
+R graphics engine version 14 is not supported by this version of RStudio. The Plots tab will be disabled until a newer version of RStudio is installed. 
+> activity <- read.csv("activity.csv")
+Error in file(file, "rt") : cannot open the connection
+In addition: Warning message:
+In file(file, "rt") :
+  cannot open file 'activity.csv': No such file or directory
+> getwd()
+[1] "C:/Users/Parham/Desktop/Reproducible-Research-Project-1"
+> activity <- read.csv("activity.csv")
+> # Change the date format
+> activity$date <- as.POSIXct(activity$date, "%Y%m%d")
+There were 12 warnings (use warnings() to see them)
+> # Create a day
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> # Getting the days of all the dates on the dataset
+> day <- weekdays(activity$date)
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> # Combining
+> activity <- cbind(activity, day)
+> #Check the summary of data
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> summary(activity)
+     steps             date               interval          day           
+ Min.   :  0.00   Min.   :2012-10-01   Min.   :   0.0   Length:17568      
+ 1st Qu.:  0.00   1st Qu.:2012-10-16   1st Qu.: 588.8   Class :character  
+ Median :  0.00   Median :2012-10-31   Median :1177.5   Mode  :character  
+ Mean   : 37.38   Mean   :2012-10-31   Mean   :1177.5                     
+ 3rd Qu.: 12.00   3rd Qu.:2012-11-15   3rd Qu.:1766.2                     
+ Max.   :806.00   Max.   :2012-11-30   Max.   :2355.0                     
+ NA's   :2304                                                             
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> @ Question 1 the mean of total steps
+Error: unexpected '@' in "@"
+> #Question 1 the mean of total steps
+> activityTotalSteps <- with(activity, aggregate(steps, by = list(date), sum, na.rm = TRUE))
+Warning messages:
+1: In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+2: In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> # Change Col Names
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> names(activityTotalSteps) <- c("Date", "Steps")
+> # Data set to data farme
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> totalStepsdf <- data.frame(activityTotalSteps)
+> # Plotting a histogram using ggplot2
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> library(ggplot2)
+Warning message:
+package ‘ggplot2’ was built under R version 4.1.3 
+> g <- ggplot(totalStepsdf, aes(x = Steps)) + 
++     geom_histogram(breaks = seq(0, 25000, by = 2500), fill = "#83CAFF", col = "black") + 
++     ylim(0, 30) + 
++     xlab("Total Steps Taken Per Day") + 
++     ylab("Frequency") + 
++     ggtitle("Total Number of Steps Taken on a Day") + 
++     theme_calc(base_family = "serif")
+Error in theme_calc(base_family = "serif") : 
+  could not find function "theme_calc"
+> 
+> print(g)
+Error in print(g) : object 'g' not found
+> g <- ggplot(totalStepsdf, aes(x = Steps)) + 
++     geom_histogram(breaks = seq(0, 25000, by = 2500), fill = "#83CAFF", col = "black") + 
++     ylim(0, 30) + 
++     xlab("Total Steps Taken Per Day") + 
++     ylab("Frequency") + 
++     ggtitle("Total Number of Steps Taken on a Day")
+> 
+> print(g)
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> mean(activityTotalSteps$Steps)
+[1] 9354.23
+> #Median
+> median(activityTotalSteps$Steps)
+[1] 10395
+> #Q2 - Activity pattern?
+> # The average number of steps taken, AVERAGE OVER 5-min intervals.
+> averageDailyActivity <- aggregate(activity$steps, by = list(activity$interval), 
++                                   FUN = mean, na.rm = TRUE)
+> #change col name
+> names(averageDailyActivity) <- c("Interval", "Mean")
+> 
+> # Converting data set into a dataframe
+> averageActivitydf <- data.frame(averageDailyActivity)
+> # Plotting on ggplot2
+> d <- ggplot(averageActivitydf, mapping = aes(Interval, Mean)) + 
++     geom_line(col = "blue") +
++     xlab("Interval") + 
++     ylab("Average Number of Steps") + 
++     ggtitle("Average Number of Steps Per Interval") +
++     theme_calc(base_family = "serif")
+Error in theme_calc(base_family = "serif") : 
+  could not find function "theme_calc"
+> # Plotting on ggplot2
+> d <- ggplot(averageActivitydf, mapping = aes(Interval, Mean)) + 
++     geom_line(col = "blue") +
++     xlab("Interval") + 
++     ylab("Average Number of Steps") + 
++     ggtitle("Average Number of Steps Per Interval")
+> plot(d)
+> #Q3 Check the missing value 
+> sum(is.na(activity$steps))
+[1] 2304
+> # Imputing Steps
+> imputedSteps <- averageDailyActivity$Mean[match(activity$interval, averageDailyActivity$Interval)]
+> # Transforming steps in activity and missing values with the filled values from above.
+> activityImputed <- transform(activity, 
++                              steps = ifelse(is.na(activity$steps), yes = imputedSteps, no = activity$steps))
+> 
+> # Forming the new dataset with the imputed missing values.
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> totalActivityImputed <- aggregate(steps ~ date, activityImputed, sum)
+Warning messages:
+1: In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+2: In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> #Change col names
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> # Changing col names
+> names(totalActivityImputed) <- c("date", "dailySteps")
+> #check null
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> sum(is.na(totalActivityImputed$dailySteps))
+[1] 0
+> # Converting the data set into a data frame 
+> totalImputedStepsdf <- data.frame(totalActivityImputed)
+> m <- ggplot(totalImputedStepsdf, aes(x = dailySteps)) + 
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
++     geom_histogram(breaks = seq(0, 25000, by = 2500), fill = "#83CAFF", col = "black") + 
++     ylim(0, 30) + 
++     xlab("Total Steps Taken Per Day") + 
++     ylab("Frequency") + 
++     ggtitle("Total Number of Steps Taken on a Day")
+> plot(m)
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> print(m)
+> #Check the mean
+> mean(totalActivityImputed$dailySteps)
+[1] 10766.19
+> #check the median
+> median(totalActivityImputed$dailySteps)
+[1] 10766.19
+> #Q4 - Differences in activity between weekdays and weekends?
+> # change the format of the dates
+> activity$date <- as.Date(strptime(activity$date, format="%Y-%m-%d"))
+Warning message:
+In as.POSIXlt.POSIXct(x, tz) : unknown timezone '%Y%m%d'
+> # Creating a function
+> activity$dayType <- sapply(activity$date, function(x) {
++     if(weekdays(x) == "Saturday" | weekdays(x) == "Sunday")
++     {y <- "Weekend"}
++     else {y <- "Weekday"}
++     y
++ })
+> activityByDay <-  aggregate(steps ~ interval + dayType, activity, mean, na.rm = TRUE)
+> dayt <-  ggplot(activityByDay, aes(x = interval , y = steps, color = dayType)) + 
++     geom_line() + ggtitle("Average Daily Steps by Day Type") + 
++     xlab("Interval") + 
++     ylab("Average Number of Steps") +
++     facet_wrap(~dayType, ncol = 1, nrow=2) +
++     scale_color_discrete(name = "Day Type")
+> Plot(day)
+Error in Plot(day) : could not find function "Plot"
+> Plot(dayt)
+Error in Plot(dayt) : could not find function "Plot"
+> print(dayt)
